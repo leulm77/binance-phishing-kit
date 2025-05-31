@@ -1,0 +1,43 @@
+[2025-05-31 12:56:25] Fingerprint Data:
+Array
+(
+    [screen] => Array
+        (
+            [width] => 1440
+            [height] => 900
+            [colorDepth] => 24
+            [pixelDepth] => 24
+        )
+
+    [timezone] => America/New_York
+    [hardwareConcurrency] => 2
+    [deviceMemory] => 4
+    [touchSupport] => 
+    [plugins] => PDF Viewer, Chrome PDF Viewer, Chromium PDF Viewer, Microsoft Edge PDF Viewer, WebKit built-in PDF
+    [fonts] => 
+    [canvasFingerprint] => data:image/png;base64,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
+    [webglFingerprint] => Array
+        (
+            [vendor] => Google Inc. (Intel)
+            [renderer] => ANGLE (Intel, Mesa Mobile IntelÂ® GM45 Express Chipset (CTG), OpenGL 2.1)
+        )
+
+    [connection] => Array
+        (
+            [type] => 4g
+            [downlink] => 1.65 Mbps
+            [rtt] => 250 ms
+            [saveData] => 
+        )
+
+    [socialMedia] => Array
+        (
+            [facebook] => 
+            [twitter] => 
+            [instagram] => 
+            [linkedin] => 
+            [pinterest] => 
+        )
+
+)
+
